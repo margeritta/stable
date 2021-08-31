@@ -6,5 +6,5 @@ class Config(object):
     if uri.startswith("postgres://"):
         uri = uri.replace("postgres://", "postgresql://", 1)
     SECRET_KEY = 'stable'
-    SQLALCHEMY_DATABASE_URI = os.environ.get(uri, 'postgresql://owner:owner@localhost/stable')
+    SQLALCHEMY_DATABASE_URI = uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
