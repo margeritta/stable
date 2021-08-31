@@ -9,3 +9,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from app import routes, models
+
+if __name__ == "__main__":
+    db.init_app(app)
+    app.run()
