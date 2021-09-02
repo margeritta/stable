@@ -3,10 +3,9 @@ from app import app
 from app import db
 from flask import Flask, request, jsonify
 from .models import db, Employee, Horse, Task, News, EmployeesNews
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 import datetime
 from sqlalchemy import desc, asc
-import ast
 
 
 @app.before_first_request
@@ -54,6 +53,13 @@ ENDPOINTS:
 @app.route('/rebuild_all')
 """
 
+@app.route('/', methods=['GET'])
+def routes_list():
+    func_list = []
+    for rule in app.url_map.iter_rules():
+        if rule.endpoint != 'static':
+            func_list.append(rule.rule)
+    return jsonify({"endpoints": func_list})
 
 #  employee
 @app.route('/employee/create', methods=['POST'])
@@ -357,7 +363,7 @@ def add_news():
 
 @app.route('/newses', methods=['GET'])
 def get_newses():
-    newses = News.query.order_by(asc(News.date)).all()
+    newses = News.query.order_by(desc(News.date)).all()
     json_newses = []
     for news in newses:
         json_newses.append(news.serialize())
@@ -432,7 +438,7 @@ def add_employees_news():
 @jwt_required()
 def get_employees_newses():
     employees_newses = EmployeesNews.query.order_by(
-        asc(EmployeesNews.date)).all()
+        desc(EmployeesNews.date)).all()
     json_newses = []
     for news in employees_newses:
         json_newses.append(news.serialize())
